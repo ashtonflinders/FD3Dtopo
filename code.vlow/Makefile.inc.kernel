@@ -1,0 +1,96 @@
+#******************************************************************************#
+#*     Makefile of FFTomo SI-kernel code for FD3Dtopo-nonstaggered package    *#
+#*                                                                            *#
+#*            Author: Wei ZHANG     Email: zhangwei.zw@gmail.com              *#
+#*                       Copyright (C) 2008 Wei ZHANG                         *#
+#******************************************************************************#
+
+# $Date: 2008-03-03 10:27:27 +0800 (Mon, 03 Mar 2008) $
+# $Revision: 4 $
+# $LastChangedBy: zhangw $
+
+#######################################################################
+#                   source files and target names                     #
+#######################################################################
+FPPDIRKER := ./srcF.kernel
+
+SRC_KER_PAIR_FPP := SI_ker_pair.F90
+SRC_KER_PAIR := SI_ker_pair.f90
+EXE_KER_PAIR := SI_ker_pair
+OBJ_KER_PAIR := $(foreach file,$(SRC_KER_PAIR),$(OBJDIR)/$(file:.f90=.o))
+SRC_KER_PAIR_MPI := SI_ker_pair_mpi.f90
+EXE_KER_PAIR_MPI := SI_ker_pair_mpi
+OBJ_KER_PAIR_MPI := $(foreach file,$(SRC_KER_PAIR_MPI),$(OBJDIR)/$(file:.f90=.o))
+
+SRC_KER_STA_FPP := SI_ker_sta.F90
+SRC_KER_STA := SI_ker_sta.f90
+EXE_KER_STA := SI_ker_sta
+OBJ_KER_STA := $(foreach file,$(SRC_KER_STA),$(OBJDIR)/$(file:.f90=.o))
+SRC_KER_STA_MPI := SI_ker_sta_mpi.f90
+EXE_KER_STA_MPI := SI_ker_sta_mpi
+OBJ_KER_STA_MPI := $(foreach file,$(SRC_KER_STA_MPI),$(OBJDIR)/$(file:.f90=.o))
+
+SRC_KER2INFO_FPP := SI_ker2info.F90
+SRC_KER2INFO := SI_ker2info.f90
+EXE_KER2INFO := SI_ker2info
+OBJ_KER2INFO := $(foreach file,$(SRC_KER2INFO),$(OBJDIR)/$(file:.f90=.o))
+SRC_KER2INFO_MPI := SI_ker2info_mpi.f90
+EXE_KER2INFO_MPI := SI_ker2info_mpi
+OBJ_KER2INFO_MPI := $(foreach file,$(SRC_KER2INFO_MPI),$(OBJDIR)/$(file:.f90=.o))
+
+SRC_KER2ASSM_FPP := SI_ker2assm.F90
+SRC_KER2ASSM := SI_ker2assm.f90
+EXE_KER2ASSM := SI_ker2assm
+OBJ_KER2ASSM := $(foreach file,$(SRC_KER2ASSM),$(OBJDIR)/$(file:.f90=.o))
+SRC_KER2ASSM_MPI := SI_ker2assm_mpi.f90
+EXE_KER2ASSM_MPI := SI_ker2assm_mpi
+OBJ_KER2ASSM_MPI := $(foreach file,$(SRC_KER2ASSM_MPI),$(OBJDIR)/$(file:.f90=.o))
+
+vpath %.F90 $(FPPDIRKER)
+
+#######################################################################
+#                              target                                 #
+#######################################################################
+phony_list := $(phony_list) kernel
+.PHONY: $(phony_list)
+
+kern2assm: $(BINDIR)/$(EXE_KER2ASSM)
+
+kernel: $(BINDIR)/$(EXE_KER_PAIR) $(BINDIR)/$(EXE_KER_PAIR_MPI) \
+        $(BINDIR)/$(EXE_KER_STA)  $(BINDIR)/$(EXE_KER_STA_MPI)  \
+        $(BINDIR)/$(EXE_KER2INFO) $(BINDIR)/$(EXE_KER2INFO_MPI) \
+        $(BINDIR)/$(EXE_KER2ASSM) $(BINDIR)/$(EXE_KER2ASSM_MPI)
+
+$(BINDIR)/$(EXE_KER_PAIR): $(OBJ_MOD) $(OBJ_KER_PAIR)
+	$(FC) -o $@ $(OBJ_MOD) $(OBJ_KER_PAIR) $(LDFLAGS)
+$(BINDIR)/$(EXE_KER_PAIR_MPI): $(OBJ_MOD) $(OBJ_KER_PAIR_MPI)
+	$(FC) -o $@ $(OBJ_MOD) $(OBJ_KER_PAIR_MPI) $(LDFLAGS)
+
+$(BINDIR)/$(EXE_KER_STA): $(OBJ_MOD) $(OBJ_KER_STA)
+	$(FC) -o $@ $(OBJ_MOD) $(OBJ_KER_STA) $(LDFLAGS)
+$(BINDIR)/$(EXE_KER_STA_MPI): $(OBJ_MOD) $(OBJ_KER_STA_MPI)
+	$(FC) -o $@ $(OBJ_MOD) $(OBJ_KER_STA_MPI) $(LDFLAGS)
+
+$(BINDIR)/$(EXE_KER2INFO): $(OBJ_MOD) $(OBJ_KER2INFO)
+	$(FC) -o $@ $(OBJ_MOD) $(OBJ_KER2INFO) $(LDFLAGS)
+$(BINDIR)/$(EXE_KER2INFO_MPI): $(OBJ_MOD) $(OBJ_KER2INFO_MPI)
+	$(FC) -o $@ $(OBJ_MOD) $(OBJ_KER2INFO_MPI) $(LDFLAGS)
+
+$(BINDIR)/$(EXE_KER2ASSM): $(OBJ_MOD) $(OBJ_KER2ASSM)
+	$(FC) -o $@ $(OBJ_MOD) $(OBJ_KER2ASSM) $(LDFLAGS)
+$(BINDIR)/$(EXE_KER2ASSM_MPI): $(OBJ_MOD) $(OBJ_KER2ASSM_MPI)
+	$(FC) -o $@ $(OBJ_MOD) $(OBJ_KER2ASSM_MPI) $(LDFLAGS)
+
+#######################################################################
+#                        subffixes rules                              #
+#######################################################################
+$(SRC_KER_PAIR_MPI): $(SRC_KER_PAIR_FPP)
+	$(FPP) $(FPPINCS) $(FPPFLAGS) -DKernelMPI $< > $(SRCDIR)/$(@F)
+$(SRC_KER_STA_MPI): $(SRC_KER_STA_FPP)
+	$(FPP) $(FPPINCS) $(FPPFLAGS) -DKernelMPI $< > $(SRCDIR)/$(@F)
+$(SRC_KER2INFO_MPI): $(SRC_KER2INFO_FPP)
+	$(FPP) $(FPPINCS) $(FPPFLAGS) -DKernelInfoMPI $< > $(SRCDIR)/$(@F)
+$(SRC_KER2ASSM_MPI): $(SRC_KER2ASSM_FPP)
+	$(FPP) $(FPPINCS) $(FPPFLAGS) -DKernelAssmMPI $< > $(SRCDIR)/$(@F)
+
+# vim:ft=make:ts=4:sw=4:nu:et:ai:

@@ -1,0 +1,112 @@
+#******************************************************************************#
+#*                                                                            *#
+#*                             FD3Dtopo-nonstaggered                          *#
+#*                           =========================                        *#
+#*                                                                            *#
+#*                        The Fortran90 Program Package                       *#
+#*            for Non-Staggered Finite-Difference Seismic Wave Modeling       *#
+#*                   in 3D Complex Media with Surface Topography              *#
+#*                                                                            *#
+#*                                                                            *#
+#*                        Wei ZHANG  and  Xiaofei CHEN                        *#
+#*               email: zhangwei.zw@gmail.com, xfchen@pku.edu.cn              *#
+#*             Geophysics Department, Peking University, China, 2006          *#
+#*                                                                            *#
+#*     A signed non-commercial agreement is required to use this program.     *#
+#*             Free for non-commercial academic research ONLY.                *#
+#*       This program is distributed WITHOUT ANY WARRANTY whatsoever.         *#
+#*       Do not redistribute this program without written permission.         *#
+#*                                                                            *#
+#******************************************************************************#
+
+
+1 Introduction
+
+  This program simulates seismic wave propagation in 3D complex media with
+  surface topography by using non-staggered finite difference method.
+  We use body-fitted grid to conform the grid surface with free surface
+  topography, then the non-staggered FD scheme, DRP/opt MacCormack scheme
+  (Hixon,1997), is used to update the stress-velocity wave equations.
+  The traction free surface boundary condition is implemented through
+  Traction Image method (Zhang and Chen, 2006).
+
+2 Direcotry layout
+
+  code/
+     srcF/
+         all source codes are here
+     Makefie*
+         makefile for this package
+     run.make.sh
+         script to run make to compile the source codes.
+  mfiles/
+     matlab scriptes to show the result
+     #need snctools: http://mexcdf.sourceforge.net/
+  run/
+     some simulation examples. A little detailed info can be found
+     in readme file under each directory.
+
+     example.media.composite/
+     valid.hill3d.Gauss/
+
+     # I will add other medium input type example in the future.
+     # Please have a look at code/srcF/seis3d_media.F90 to
+     # figure out how to use other input types.
+
+  README
+     this file
+
+3 Usage
+  
+  1) cd code/, type 
+       ./run.make.sh
+     to compile the programs
+     # setting FC, LIB_NETCDF, MOD_NETCDF according to your system first
+     # in Makefile and Makefile.opt.WHEREAMI
+     after compiling, all executable programs will be in a created
+     bin/ directory here.
+  2) cd run/valid.hill3d.Gauss/
+     modify the input *.conf file
+     and prepare input files,
+     then execute
+         ./bin/seis3d_grid or qsub pbs_grid_mpi.sh
+         ./bin/seis3d_media or qsub pbs_media_mpi.sh
+         ./bin/seis3d_metric or qsub pbs_metric_mpi.sh
+         ./bin/seis3d_source
+         ./bin/seis3d_station
+         qsub pbs_wave_mpi.sh
+         # the above steps valid for OpenPBS/torque job control system,
+         # you should create submitting scripts according the actual job
+         # control systme used. Or use mpirun directly
+         # nohup mpirun -np NNN -nolocal -machinefile hostlist bin/seis3d_wave_mpi &
+
+4 Availability and use of the program package
+
+  Upon request from the authors.
+  Contact the authors to get the latest version. 
+
+  If you use this code for your own research, please send an email
+  to Wei ZHANG <zhangwei.zw@gmail.com>
+  and Xiaofei CHEN <xfchen@pku.edu.cn>
+  for authorization, and cite (in BibTex format):
+
+  @ARTICLE{Zhang2006a,
+  author={W. Zhang and X.f. Chen},
+  year=2006,
+  title={Traction image method for irregular free surface boundaries in finite
+         difference seismic wave simulation},
+  journal={Geophys. J. Int.},
+  volume=167,
+  pages={337-353}}
+
+  @PHDTHESIS{Zhang2006b,
+  author = {W. Zhang},
+  title = {Finite Difference Seismic Wave Modelling in 3D Heterogeneous Media
+      with Surface Topography and its Implementation in Strong Ground Motion Study},
+  school = {Peking University},
+  year = {2006} }
+
+
+$Id: README 376 2007-10-02 14:24:41Z zhangw $
+
+# vim:ft=conf:ts=4:sw=4:nu:et:ai:
