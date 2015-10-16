@@ -20,7 +20,6 @@ FC     :=  /opt/mpich3/3.1-intel/bin/mpif90
 NETCDF :=  /opt/netcdf4/4.2.2-ifort
 NETCDFC :=  /opt/netcdf4/4.3.1-gcc
 
-#LDFLAGS := -L$(NETCDF)/lib -lnetcdff $(if $(STATIC),-Bstatic -static,)
 LDFLAGS := $(NETCDF)/lib/libnetcdff.a \
 	   $(NETCDFC)/lib/libnetcdf.a \
 	   $(if $(STATIC),-Bstatic -static,)
