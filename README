@@ -36,70 +36,73 @@
 
 2 Directory layout
 
-	code.vlow/
-		srcF/
-    		all source codes are here
-         
-		srcF.kernel/
-    		additional source code for Frechet kernel calculations
-        
-     	Makefile*
-        	makefile for this package, has specific options for simulation parameters
-         
-	 	Makefile.opt.bluewaves
-	 		sets specific makefile options for compiling on the Bluewaves cluster
-	 	
-        Makefile.inc.kernel
-        	additional makefile options for  compiling Frechet kernel code
-        
-     	run.make.sh
-         	script to run make to compile the source codes.
-         	
-    config/
-    	mfiles/
-     		matlab codes and packages that might be useful for reading in data/results
-    		
-     	crust1/
-     		the CRUST1.0 crustal seismic velocity model, see the readme for more info
-     
-     example/
-     	grand_canyon/
-     		model_setup/
-     			matlab code to generate an initial starting model for the included example
-     		
-     		simulation/
-     			simulation of a source propagating at the Grand Canyon, USA
-	README
-    	this file
+  code.vlow/
+  	srcF/
+  	  all source codes are here
+  
+  	srcF.kernel/
+  	  additional source code for Frechet kernel calculations
+  
+  	Makefile*
+  	  makefile for this package, has specific options for simulation parameters
+  
+  	Makefile.opt.bluewaves
+  	  sets specific makefile options for compiling on the Bluewaves cluster
+  
+  	Makefile.inc.kernel
+  	  additional makefile options for  compiling Frechet kernel code
+  
+  	run.make.sh
+  	  script to run make to compile the source codes.
+  
+  config/
+  	mfiles/
+  	  codes/packages that might be useful for reading in data/results
+  
+  	crust1/
+  	  the CRUST1.0 crustal seismic velocity model, see the readme for more info
+  
+   example/
+     grand_canyon/
+  	   model_setup/
+  	     matlab code to generate an initial starting model for the included example
+  
+  	   simulation/
+  	     simulation of a source propagating at the Grand Canyon, USA
+
+README
+  this file
 
 3 Usage
   
   1) For Bluewaves only; open up an interactive connection to a node so we are not 
-  	 performing the following actions on the head node,
-  	 
-  	 interact -X -w 20:00:00
-  		
+  performing the following actions on the head node,
+  
+    interact -X -w 20:00:00
+  
   2) cd into the cloned FD3Dtopo directory
   
   3) Compile the code by changing into the code.vlow/ directory, and run;
-		./run.make.sh
-     
-  4) Prepare the example starting model by changing into example/grand_canyon/model_setup,
-     and run;
-  		./make_model.sh
+  
+    ./run.make.sh
+  
+  4) Prepare example starting model by changing into example/grand_canyon/model_setup,
+  and run;
+  
+    ./make_model.sh
   
   5) Exit the interactive node connection;
-  		exit
   
-  6) Run the example simulation by changing into example/grand_canyon/simulation and 
-  	 running each of the following successively, waiting for the previous to finish before
-  	 starting the next;
-		qsub pbs_grid_mpi.sh
-		qsub pbs_metric_mpi.sh
-		qsub pbs_media_mpi.sh
-		qsub pbs_source_mpi.sh
-		qsub pbs_station_mpi.sh
-        qsub pbs_wave_mpi.sh
+    exit
+  
+  6) Run the example simulation by changing into example/grand_canyon/simulation and running each of the following successively, waiting for the previous to finish before starting the next;
+  
+    qsub pbs_grid_mpi.sh
+    qsub pbs_metric_mpi.sh
+    qsub pbs_media_mpi.sh
+    qsub pbs_source_mpi.sh
+    qsub pbs_station_mpi.sh
+    qsub pbs_wave_mpi.sh
 
 4 Availability and use of the program package
 
