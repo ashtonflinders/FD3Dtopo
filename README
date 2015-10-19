@@ -95,7 +95,9 @@ README
   
     exit
   
-  6) Run the example simulation by changing into example/grand_canyon/simulation and running each of the following successively, waiting for the previous to finish before starting the next;
+  6) Run the example simulation by changing into example/grand_canyon/simulation and 
+  running each of the following successively, waiting for the previous to finish before
+  starting the next;
   
     qsub pbs_grid_mpi.sh
     qsub pbs_metric_mpi.sh
