@@ -17,6 +17,10 @@
 #*       This program is distributed WITHOUT ANY WARRANTY whatsoever.         *#
 #*       Do not redistribute this program without written permission.         *#
 #*                                                                            *#
+#*                                                                            *#
+#*   Managed and Maintained by Ashton FLINDERS, email: andrealphus@gmail.com  *#
+#*                                                                            *#
+#*                                                                            *#
 #******************************************************************************#
 
 
@@ -30,55 +34,73 @@
   The traction free surface boundary condition is implemented through
   Traction Image method (Zhang and Chen, 2006).
 
-2 Direcotry layout
+2 Directory layout
 
-  code/
-     srcF/
-         all source codes are here
-     Makefie*
-         makefile for this package
-     run.make.sh
-         script to run make to compile the source codes.
-  mfiles/
-     matlab scriptes to show the result
-     #need snctools: http://mexcdf.sourceforge.net/
-  run/
-     some simulation examples. A little detailed info can be found
-     in readme file under each directory.
-
-     example.media.composite/
-     valid.hill3d.Gauss/
-
-     # I will add other medium input type example in the future.
-     # Please have a look at code/srcF/seis3d_media.F90 to
-     # figure out how to use other input types.
-
-  README
-     this file
+	code.vlow/
+		srcF/
+    		all source codes are here
+         
+		srcF.kernel/
+    		additional source code for Frechet kernel calculations
+        
+     	Makefile*
+        	makefile for this package, has specific options for simulation parameters
+         
+	 	Makefile.opt.bluewaves
+	 		sets specific makefile options for compiling on the Bluewaves cluster
+	 	
+        Makefile.inc.kernel
+        	additional makefile options for  compiling Frechet kernel code
+        
+     	run.make.sh
+         	script to run make to compile the source codes.
+         	
+    config/
+    	mfiles/
+     		a wide range of matlab codes and packages that might be useful for displaying
+     		and/or reading in data/results
+     		
+     	crust1/
+     		the CRUST1.0 crustal seismic velocity model, see the readme for more info
+     
+     example/
+     	grand_canyon/
+     		model_setup/
+     			matlab code to generate an initial starting model for the included example
+     		
+     		simulation/
+     			an example simulation of a source propagating at the Grand Canyon, USA
+	README
+    	this file
 
 3 Usage
   
-  1) cd code/, type 
-       ./run.make.sh
-     to compile the programs
-     # setting FC, LIB_NETCDF, MOD_NETCDF according to your system first
-     # in Makefile and Makefile.opt.WHEREAMI
-     after compiling, all executable programs will be in a created
-     bin/ directory here.
-  2) cd run/valid.hill3d.Gauss/
-     modify the input *.conf file
-     and prepare input files,
-     then execute
-         ./bin/seis3d_grid or qsub pbs_grid_mpi.sh
-         ./bin/seis3d_media or qsub pbs_media_mpi.sh
-         ./bin/seis3d_metric or qsub pbs_metric_mpi.sh
-         ./bin/seis3d_source
-         ./bin/seis3d_station
-         qsub pbs_wave_mpi.sh
-         # the above steps valid for OpenPBS/torque job control system,
-         # you should create submitting scripts according the actual job
-         # control systme used. Or use mpirun directly
-         # nohup mpirun -np NNN -nolocal -machinefile hostlist bin/seis3d_wave_mpi &
+  1) For Bluewaves only; open up an interactive connection to a node so we are not 
+  	 performing the following actions on the head node,
+  	 
+  	 interact -X -w 20:00:00
+  		
+  2) cd into the cloned FD3Dtopo directory
+  
+  3) Compile the code by changing into the code.vlow/ directory, and run;
+		./run.make.sh
+     
+  4) Prepare the example starting model by changing into example/grand_canyon/model_setup,
+     and run;
+  		./make_model.sh
+  
+  5) Exit the interactive node connection;
+  		exit
+  
+  6) Run the example simulation by changing into example/grand_canyon/simulation and 
+  	 running each of the following successively, waiting for the previous to finish before
+  	 starting the next;
+		qsub pbs_grid_mpi.sh
+		qsub pbs_metric_mpi.sh
+		qsub pbs_media_mpi.sh
+		qsub pbs_source_mpi.sh
+		qsub pbs_station_mpi.sh
+        qsub pbs_wave_mpi.sh
 
 4 Availability and use of the program package
 
@@ -105,8 +127,3 @@
       with Surface Topography and its Implementation in Strong Ground Motion Study},
   school = {Peking University},
   year = {2006} }
-
-
-$Id: README 376 2007-10-02 14:24:41Z zhangw $
-
-# vim:ft=conf:ts=4:sw=4:nu:et:ai:
