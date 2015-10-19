@@ -57,9 +57,8 @@
          	
     config/
     	mfiles/
-     		a wide range of matlab codes and packages that might be useful for displaying
-     		and/or reading in data/results
-     		
+     		matlab codes and packages that might be useful for reading in data/results
+    		
      	crust1/
      		the CRUST1.0 crustal seismic velocity model, see the readme for more info
      
@@ -69,7 +68,7 @@
      			matlab code to generate an initial starting model for the included example
      		
      		simulation/
-     			an example simulation of a source propagating at the Grand Canyon, USA
+     			simulation of a source propagating at the Grand Canyon, USA
 	README
     	this file
 
