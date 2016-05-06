@@ -1,0 +1,68 @@
+#******************************************************************************#
+#*  Compiler setting on seawolf.gso.uri.edu (AMD opteron, CentOS 4.6 x86_64)  *#
+#*                                                                            *#
+#*            Author: Wei ZHANG     Email: zhangwei.zw@gmail.com              *#
+#*                       Copyright (C) 2008 Wei ZHANG                         *#
+#******************************************************************************#
+
+# $Date: 2009-01-14 21:13:32 -0500 (Wed, 14 Jan 2009) $
+# $Revision: 52 $
+# $LastChangedBy: zhangw $
+
+#COMPILER := Intel
+COMPILER := GNU
+
+#######################################################################
+#                        Intel compiler                               #
+#######################################################################
+ifeq "$(COMPILER)" "Intel"
+FC     :=  /opt/mpich3/3.1-intel/bin/mpif90
+NETCDF :=  /opt/netcdf4/4.2.2-ifort
+NETCDFC :=  /opt/netcdf4/4.3.1-gcc
+
+LDFLAGS := $(NETCDF)/lib/libnetcdff.a \
+	   $(NETCDFC)/lib/libnetcdf.a \
+	   $(if $(STATIC),-Bstatic -static,)
+FFLAGS := -c -xSSE4.2 -zero \
+       	  -fast -mp1 -unroll0 -ip-no-inlining -no-prec-div \
+          -module $(OBJDIR) -I$(NETCDF)/include \
+          $(if $(WithOMP),-openmp -openmp_report2,)
+FFLAGSMP := $(FFLAGS)
+
+ifeq "$(DEBUG)" "ON"
+  FFLAGS   := $(if $(WithOMP),-O0,-g -debug extended -traceback -fp) $(FFLAGS)
+  FFLAGSMP := $(if $(WithOMP),-O0,-g -debug extended -traceback -fp) $(FFLAGSMP)
+  #FFLAGS   := -check bounds -check uninit -ftrapuv -fpe0 $(FFLAGS)
+else
+  FFLAGS   := -warn nounused $(FFLAGS)
+  FFLAGSMP := $(FFLAGSMP)
+  LDFLAGS  := $(LDFLAGS)
+endif #DEBUG
+
+endif #Intel
+#######################################################################
+#                          GNU compiler                               #
+#######################################################################
+ifeq "$(COMPILER)" "GNU"
+FC     :=  /opt/openmpi/bin/mpif90
+NETCDF :=  /opt/netcdf4/4.2.2-gfortran
+NETCDFC :=  /opt/netcdf4/4.3.1-gcc
+
+LDFLAGS := $(NETCDF)/lib/libnetcdff.a \
+	   $(NETCDFC)/lib/libnetcdf.a \
+	   $(if $(STATIC),-static-libgfortran,)
+
+FFLAGS := -c -I$(OBJDIR) -I$(NETCDF)/include -J$(OBJDIR)
+FFLAGSMP := $(FFLAGS)
+
+ifeq "$(DEBUG)" "ON"
+  FFLAGS   := $(if $(WithOMP),-O0,-g -fcheck all -finit-integer=0 -finit-real=zero) $(FFLAGS)
+  FFLAGSMP := $(if $(WithOMP),-O0,-g -fcheck all -finit-integer=0 -finit-real=zero) $(FFLAGSMP)
+else
+  FFLAGS   := -O3 $(FFLAGS)
+  FFLAGSMP := -O3 $(FFLAGSMP)
+endif #DEBUG
+
+endif # GNU
+
+# vim:ft=make:ts=4:sw=4:nu:et:ai:
